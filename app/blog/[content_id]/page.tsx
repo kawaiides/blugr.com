@@ -48,22 +48,6 @@ async function getBlogPost(content_id: string): Promise<BlogPost> {
 export default async function BlogPostPage({ params }: { params: { content_id: string } }) {
   const post = await getBlogPost(params.content_id);
   
-  // Add safe date formatting with fallback
-  const formattedDate = (() => {
-    try {
-      // Try parsing ISO string first
-      return format(parseISO(post.created_at), 'MMMM d, yyyy');
-    } catch (error) {
-      try {
-        // Fallback to direct Date parsing
-        return format(new Date(post.created_at), 'MMMM d, yyyy');
-      } catch (error) {
-        console.error('Error formatting date:', error);
-        return 'Date unavailable'; // Fallback text
-      }
-    }
-  })();
-  
   return (
     <div className="min-h-screen bg-gray-50">
       <article className="max-w-3xl mx-auto px-4 py-12">
@@ -75,7 +59,7 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
             {post.summary.parsed_summary.blog_desc}
           </div>
           <div className="text-sm text-gray-500">
-            {formattedDate}
+            {post.created_at}
           </div>
         </header>
 
