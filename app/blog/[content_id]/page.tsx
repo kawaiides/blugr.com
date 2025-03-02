@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { connectToDatabase } from '@/lib/mongodb';
 import { BlogPost } from '@/types/blog';
 import { notFound } from 'next/navigation';
+import { formatDate } from '@/lib/utils'; // Ensure you have a date formatting utility
 
 export const revalidate = 3600;
 
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }: { params: { content_id: strin
         title: post.summary.parsed_summary.title,
         description: post.summary.parsed_summary.blog_desc,
         type: 'article',
-        publishedTime: post.metadata.created_at,
+        publishedTime: new Date(post.metadata.created_at).toISOString(), // Fix date formatting
       },
     };
   } catch (error) {
@@ -36,8 +37,14 @@ async function getBlogPost(content_id: string): Promise<BlogPost> {
     if (!post) {
       notFound();
     }
-    
-    return post;
+
+    // Convert MongoDB document to plain object and handle dates
+    const parsedPost = JSON.parse(JSON.stringify({
+      ...post,
+      created_at: post.metadata.created_at ? new Date(post.metadata.created_at).toISOString() : null
+    }));
+
+    return parsedPost as BlogPost;
   } catch (error) {
     console.error('Error fetching blog post:', error);
     throw new Error('Failed to fetch blog post');
@@ -58,13 +65,14 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
             {post.summary.parsed_summary.blog_desc}
           </div>
           <div className="text-sm text-gray-500">
-            {post.metadata.created_at}
+            {/* Add date validation and formatting */}
+            {post.metadata.created_at ? formatDate(post.metadata.created_at) : 'No date available'}
           </div>
         </header>
 
         <div className="prose prose-lg max-w-none">
           {post.summary.parsed_summary.body.map((section, index) => (
-            <section key={index} className="mb-8">
+            <section key={`${section.h2}-${index}`} className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
                 {section.h2}
               </h2>
@@ -79,7 +87,7 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
           <div className="flex justify-between items-center">
             <div className="text-sm text-gray-500">
               Source: <a href={post.url} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
-                Original Article
+                Original Video
               </a>
             </div>
             <div className="text-sm text-gray-500">
