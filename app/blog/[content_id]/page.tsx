@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import { connectToDatabase } from '@/lib/mongodb';
 import { BlogPost } from '@/types/blog';
-import { format, parseISO } from 'date-fns';
 import { notFound } from 'next/navigation';
 
 export const revalidate = 3600;
@@ -17,7 +16,7 @@ export async function generateMetadata({ params }: { params: { content_id: strin
         title: post.summary.parsed_summary.title,
         description: post.summary.parsed_summary.blog_desc,
         type: 'article',
-        publishedTime: post.created_at,
+        publishedTime: post.metadata.created_at,
       },
     };
   } catch (error) {
@@ -59,7 +58,7 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
             {post.summary.parsed_summary.blog_desc}
           </div>
           <div className="text-sm text-gray-500">
-            {post.created_at}
+            {post.metadata.created_at}
           </div>
         </header>
 
