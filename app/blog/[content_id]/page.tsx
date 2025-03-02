@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { connectToDatabase } from '@/lib/mongodb';
 import { BlogPost } from '@/types/blog';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { notFound } from 'next/navigation';
 
 export const revalidate = 3600;
@@ -47,12 +47,63 @@ async function getBlogPost(content_id: string): Promise<BlogPost> {
 
 export default async function BlogPostPage({ params }: { params: { content_id: string } }) {
   const post = await getBlogPost(params.content_id);
-  const formattedDate = format(new Date(post.created_at), 'MMMM d, yyyy');
+  
+  // Add safe date formatting with fallback
+  const formattedDate = (() => {
+    try {
+      // Try parsing ISO string first
+      return format(parseISO(post.created_at), 'MMMM d, yyyy');
+    } catch (error) {
+      try {
+        // Fallback to direct Date parsing
+        return format(new Date(post.created_at), 'MMMM d, yyyy');
+      } catch (error) {
+        console.error('Error formatting date:', error);
+        return 'Date unavailable'; // Fallback text
+      }
+    }
+  })();
   
   return (
     <div className="min-h-screen bg-gray-50">
       <article className="max-w-3xl mx-auto px-4 py-12">
-        {/* ... existing JSX code ... */}
+        <header className="mb-12 text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">
+            {post.summary.parsed_summary.title}
+          </h1>
+          <div className="text-lg text-gray-600 mb-6">
+            {post.summary.parsed_summary.blog_desc}
+          </div>
+          <div className="text-sm text-gray-500">
+            {formattedDate}
+          </div>
+        </header>
+
+        <div className="prose prose-lg max-w-none">
+          {post.summary.parsed_summary.body.map((section, index) => (
+            <section key={index} className="mb-8">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                {section.h2}
+              </h2>
+              <p className="text-gray-700 leading-relaxed">
+                {section.p}
+              </p>
+            </section>
+          ))}
+        </div>
+
+        <footer className="mt-12 pt-6 border-t border-gray-200">
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-gray-500">
+              Source: <a href={post.url} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
+                Original Article
+              </a>
+            </div>
+            <div className="text-sm text-gray-500">
+              ID: {post.content_id}
+            </div>
+          </div>
+        </footer>
       </article>
     </div>
   );
