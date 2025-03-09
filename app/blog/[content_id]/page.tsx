@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb"
 import type { BlogPost } from "@/types/blog"
 import { notFound } from "next/navigation"
 import { formatDate } from "@/lib/utils"
+import ScreenshotImage from "@/components/screenshot-image"
 
 export const revalidate = 3600
 
@@ -105,6 +106,10 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
             <section key={`${section.h2}-${index}`} className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">{section.h2}</h2>
               <p className="text-gray-700 leading-relaxed">{section.p}</p>
+              <ScreenshotImage
+                alt={section.h2}
+                objectKey={`screenshots/${params.content_id}/${section.h2.split(" ").join("_")}_0.png`} 
+              />
             </section>
           ))}
         </div>
