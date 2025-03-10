@@ -7,7 +7,7 @@ export default async function sitemap() {
   const blogs = await collection.find().toArray()
   // Get all blog posts
   const blogUrls = blogs.map((blog) => ({
-    url: `${baseUrl}/blog/${blog.id}`,
+    url: `${baseUrl}/blog/${blog.content_id}`,
     lastModified: blog.date,
   }))
 
