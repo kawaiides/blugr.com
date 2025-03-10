@@ -8,28 +8,13 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="font-bold text-2xl">
-            BlogPlatform
+            Blugr
           </Link>
           <nav className="hidden md:flex gap-6">
             <Link href="/" className="text-sm font-medium hover:underline">
               Home
             </Link>
-            <Link href="/search" className="text-sm font-medium hover:underline">
-              Search
-            </Link>
-            <Link href="/generate" className="text-sm font-medium hover:underline">
-              Generate
-            </Link>
           </nav>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/search">
-            <Button variant="ghost" size="icon">
-              <Search className="h-5 w-5" />
-              <span className="sr-only">Search</span>
-            </Button>
-          </Link>
-          <Button>Sign In</Button>
         </div>
       </div>
     </header>

@@ -18,16 +18,6 @@ export default function Footer() {
                 Home
               </Link>
             </li>
-            <li>
-              <Link href="/search" className="text-muted-foreground hover:text-foreground">
-                Search
-              </Link>
-            </li>
-            <li>
-              <Link href="/generate" className="text-muted-foreground hover:text-foreground">
-                Generate
-              </Link>
-            </li>
           </ul>
         </div>
         <div className="space-y-3">

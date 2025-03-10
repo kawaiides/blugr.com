@@ -37,9 +37,11 @@ export default async function ScreenshotImage({ objectKey, alt }: { objectKey: s
       <div className="relative w-full aspect-video">
         <Image
           src={url}
+          placeholder='blur'
+          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
           alt={alt}
           fill
-          className="object-cover rounded-lg m-4"
+          className="object-cover rounded-lg"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           priority
         />

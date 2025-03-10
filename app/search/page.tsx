@@ -1,43 +1,82 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { searchBlogs } from "@/lib/data"
+import { useState, useEffect } from "react"
 import BlogCard from "@/components/blog-card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
-
-// Note: Metadata must be exported from a Server Component, so we need to create a separate layout file
-// This is just a comment to explain why we're not adding metadata directly here
+import type { BlogPost } from "@/types/blog"
 
 export default function SearchPage() {
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<ReturnType<typeof searchBlogs>>([])
+  const [results, setResults] = useState<BlogPost[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [searched, setSearched] = useState(false)
 
-  const handleSearch = () => {
-    const searchResults = searchBlogs(query)
-    setResults(searchResults)
-    setSearched(true)
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Search failed')
+      }
+  
+      // Handle empty results
+      const searchResults = data.length > 0 
+        ? data.map((result: any) => result.document)
+        : []
+      
+      setResults(searchResults)
+      setSearched(true)
+      
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Search failed')
+    }
   }
+  
+  useEffect(() => {
+    if (query.trim()) {
+      const handler = setTimeout(() => {
+        handleSearch();
+      }, 300);
+
+      return () => clearTimeout(handler);
+    }
+  }, [query]);
 
   return (
     <div className="container py-8 space-y-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold tracking-tight mb-6 text-center">Search Blogs</h1>
+        <h1 className="text-3xl font-bold tracking-tight mb-6 text-center">
+          Search Blogs
+        </h1>
         <div className="flex gap-2">
           <Input
-            placeholder="Search for blogs by title, description, or content..."
+            placeholder="Search blogs..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="flex-1"
           />
-          <Button onClick={handleSearch}>
-            <Search className="mr-2 h-4 w-4" />
-            Search
+          <Button onClick={handleSearch} disabled={isSearching || !query.trim()}>
+            {isSearching ? (
+              <div className="flex items-center">
+                <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                Searching...
+              </div>
+            ) : (
+              <>
+                <Search className="mr-2 h-4 w-4" />
+                Search
+              </>
+            )}
           </Button>
         </div>
+        {error && (
+          <p className="text-red-500 mt-2">{error}</p>
+        )}
       </div>
 
       {searched && (
@@ -48,15 +87,16 @@ export default function SearchPage() {
           {results.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {results.map((blog) => (
-                <BlogCard key={blog.id} blog={blog} />
+                <BlogCard key={blog._id} blog={blog} />
               ))}
             </div>
           ) : (
-            <p className="text-center py-12 text-muted-foreground">No results found. Try a different search term.</p>
+            <p className="text-center py-12 text-muted-foreground">
+              No results found. Try a different search term.
+            </p>
           )}
         </div>
       )}
     </div>
   )
 }
-

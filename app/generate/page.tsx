@@ -5,33 +5,50 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-// Note: Metadata must be exported from a Server Component, so we need to create a separate layout file
-// This is just a comment to explain why we're not adding metadata directly here
-
 export default function GeneratePage() {
   const [youtubeUrl, setYoutubeUrl] = useState("")
   const [loading, setLoading] = useState(false)
   const [summary, setSummary] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setLoading(true)
     setError(null)
 
-    // Validate YouTube URL
-    if (!youtubeUrl.includes("youtube.com/watch?v=") && !youtubeUrl.includes("youtu.be/")) {
+    // Enhanced URL validation
+    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/
+    if (!youtubeRegex.test(youtubeUrl)) {
       setError("Please enter a valid YouTube URL")
       setLoading(false)
       return
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      setSummary(
-        `This is a generated summary for the YouTube video at ${youtubeUrl}.\n\nThe video discusses key concepts related to its topic, including important points, examples, and practical applications. It covers background information, current trends, and future implications. The presenter shares insights based on research and experience, making complex ideas accessible to viewers. There are several actionable takeaways that viewers can apply in their own contexts.`,
-      )
+    try {
+      const response = await fetch("https://2336-49-207-218-126.ngrok-free.app/process-video", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Add any required headers by your API
+          "ngrok-skip-browser-warning": "true" // If using ngrok's free tier
+        },
+        body: JSON.stringify({
+          url: youtubeUrl
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null)
+        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      if (!data.summary) throw new Error("Invalid response format")
+      setSummary(data.summary)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to generate summary")
+    } finally {
       setLoading(false)
-    }, 2000)
+    }
   }
 
   return (
@@ -44,7 +61,7 @@ export default function GeneratePage() {
 
         <div className="flex gap-2">
           <Input
-            placeholder="Enter YouTube video URL"
+            placeholder="Enter YouTube video URL (e.g., https://youtube.com/watch?v=...)"
             value={youtubeUrl}
             onChange={(e) => setYoutubeUrl(e.target.value)}
             className="flex-1"
@@ -54,7 +71,11 @@ export default function GeneratePage() {
           </Button>
         </div>
 
-        {error && <div className="bg-destructive/15 text-destructive p-4 rounded-md">{error}</div>}
+        {error && (
+          <div className="bg-destructive/15 text-destructive p-4 rounded-md">
+            ⚠️ {error}
+          </div>
+        )}
 
         {summary && (
           <Card>
@@ -63,7 +84,7 @@ export default function GeneratePage() {
               <CardDescription>Auto-generated summary for the provided YouTube video</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="whitespace-pre-line">{summary}</div>
+              <div className="whitespace-pre-line leading-relaxed">{summary}</div>
             </CardContent>
           </Card>
         )}
@@ -81,4 +102,3 @@ export default function GeneratePage() {
     </div>
   )
 }
-

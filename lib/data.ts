@@ -24,3 +24,14 @@ export async function getLatestBlogs(): Promise<BlogPost[]> {
     return []
   }
 }
+
+export async function searchBlogs(query: string) {
+  try {
+    const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+    if (!res.ok) throw new Error('Search failed')
+    return await res.json()
+  } catch (error) {
+    console.error('Search error:', error)
+    return []
+  }
+}
