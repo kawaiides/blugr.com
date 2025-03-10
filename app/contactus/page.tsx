@@ -54,11 +54,11 @@ export default function ContactUsPage() {
             </p>
             <div className="space-y-2">
               <p className="font-medium">Email</p>
-              <p className="text-muted-foreground">contact@blogplatform.com</p>
+              <p className="text-muted-foreground">v3rykawaii@gmail.copm</p>
             </div>
             <div className="space-y-2">
               <p className="font-medium">Address</p>
-              <p className="text-muted-foreground">123 Blog Street, Content City, 94105</p>
+              <p className="text-muted-foreground">Bangalore</p>
             </div>
             <div className="space-y-2">
               <p className="font-medium">Working Hours</p>
