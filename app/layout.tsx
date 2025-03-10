@@ -10,7 +10,7 @@ import { Analytics } from "@vercel/analytics/react"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Blog Platform",
+  title: "bloogist",
   description: "A modern blog platform built with Next.js",
 }
 
@@ -21,6 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3631586940502681"
+      crossOrigin="anonymous"></script>
+      </head>
       <body className={inter.className}>
           <div className="flex min-h-screen flex-col">
             <SessionProvider>
