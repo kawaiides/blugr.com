@@ -5,10 +5,25 @@ import { Button } from "@/components/ui/button"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Image from "next/image"
 import Logo from "@/public/bloogist.png"
+import { useEffect, useState } from "react"
+import UserInfo from "./UserInfo"
 
 export default function Header() {
-  const { data: session } = useSession()
-  
+  const { data: session, status } = useSession()
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Ensure client-side mounting
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  // Debug session changes
+  useEffect(() => {
+    console.log("Session updated:", session)
+  }, [session])
+
+  if (!isMounted) return null  // Prevent SSR mismatch
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex p-5 items-center justify-between">
@@ -37,15 +52,18 @@ export default function Header() {
               <span className="sr-only">Search</span>
             </Button>
           </Link>
-          {session ? (
+          
+          {status === "loading" ? (
+            <div>Loading...</div>
+          ) : session ? (
             <div className="flex text-2xl items-center gap-4">
-              <p>{session.user?.email}</p>
-              <Button onClick={() => signOut()} variant="outline" className="h-10 text-xl p-4">
-                Sign Out
-              </Button>
+              <UserInfo />
             </div>
           ) : (
-            <Button onClick={() => signIn('google')}className="h-10 text-xl p-4">
+            <Button 
+              onClick={() => signIn('google', { callbackUrl: '/' })}
+              className="h-10 text-xl p-4"
+            >
               Sign In
             </Button>
           )}

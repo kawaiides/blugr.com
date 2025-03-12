@@ -3,10 +3,6 @@ import GoogleProvider from 'next-auth/providers/google'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from "@/app/lib/prisma"
 
-
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!
-
 declare module 'next-auth' {
   interface User {
     id: string
@@ -31,6 +27,7 @@ export const authOption: NextAuthOptions = {
           params: {
             access_type: "offline",
             prompt: "consent",
+            scope: 'openid email profile', // Add this line
           },
           url: "https://accounts.google.com/o/oauth2/v2/auth",
         },
@@ -64,4 +61,9 @@ export const authOption: NextAuthOptions = {
       signIn: '/auth/signin',
       error: '/auth/error',
     },
+    session: {
+      strategy: "jwt", // Explicitly set when using adapter
+      maxAge: 30 * 24 * 60 * 60, // 30 days
+    },
+    debug: true,
   }

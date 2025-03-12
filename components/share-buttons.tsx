@@ -1,9 +1,17 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FaTwitter, FaFacebook, FaLinkedin, FaShare, FaClipboard, FaClipboardCheck } from "react-icons/fa"
 
 export default function ShareButtons({ url, title, description }: { url: string; title: string; description: string }) {
   const [isCopied, setIsCopied] = useState(false)
+  const [supportsShare, setSupportsShare] = useState(false)
+  const [supportsClipboard, setSupportsClipboard] = useState(false)
+
+  useEffect(() => {
+    setSupportsShare(!!navigator.share)
+    setSupportsClipboard(!!navigator.clipboard?.writeText)
+  }, [])
+
   const shareData = {
     title: title,
     text: description,
@@ -34,16 +42,16 @@ export default function ShareButtons({ url, title, description }: { url: string;
 
   return (
     <div className="flex items-center gap-2">
-      {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
+      {supportsShare && (
         <>
-            <span className="hidden sm:inline-block text-sm text-gray-500">Share Article</span>
-            <button
-                onClick={handleWebShare}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                aria-label="Share"
-            >
+        <span className="hidden sm:inline-block text-sm text-gray-500">Share Article</span>
+          <button
+            onClick={handleWebShare}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Share"
+          >
             <FaShare className="w-5 h-5 text-gray-600" />
-            </button>
+          </button>
         </>
       )}
       <a
@@ -73,7 +81,7 @@ export default function ShareButtons({ url, title, description }: { url: string;
       >
         <FaLinkedin className="w-5 h-5 text-blue-700" />
       </a>
-      {typeof navigator !== "undefined" && navigator.clipboard && (
+      {supportsClipboard && (
         <button
           onClick={handleCopyLink}
           className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -81,8 +89,8 @@ export default function ShareButtons({ url, title, description }: { url: string;
         >
           {isCopied ? (
             <div className="flex">
-                <FaClipboardCheck className="w-5 h-5 text-green-500" />
-                <span className="ml-2 text-green-500">Copied!</span>
+              <FaClipboardCheck className="w-5 h-5 text-green-500" />
+              <span className="ml-2 text-green-500">Copied!</span>
             </div>   
           ) : (
             <FaClipboard className="w-5 h-5 text-gray-600" />

@@ -3,13 +3,18 @@
 import Image from "next/image";
 import SignInBtn from "./SignInBtn";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function UserInfo() {
   const { status, data: session } = useSession();
 
   if (status === "authenticated") {
     return (
-      <div className="shadow-xl p-8 rounded-md flex flex-col gap-3 bg-yellow-200">
+      <Link 
+        className="p-2 rounded-md flex justify-center gap-3 items-center"
+        href="/profile"
+      >
+        <div className="text-xl">{session?.user?.name}</div>
         <Image
           className="rounded-full"
           src={session?.user?.image || "/default-profile.png"}
@@ -17,13 +22,7 @@ export default function UserInfo() {
           width={60}
           height={60}
         />
-        <div>
-          Name: <span className="font-bold">{session?.user?.name}</span>
-        </div>
-        <div>
-          Email: <span className="font-bold">{session?.user?.email}</span>
-        </div>
-      </div>
+      </Link>
     );
   } else {
     return <SignInBtn />;

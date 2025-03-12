@@ -147,11 +147,13 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
             <div className="text-sm text-gray-500">
               {post.metadata?.created_at ? formatDate(post.metadata.created_at) : "No date available"}
             </div>
+            <div>
             <ShareButtons 
               url={pageUrl}
               title={post.summary.parsed_summary.title}
               description={post.summary.parsed_summary.blog_desc}
             />
+            </div>
           </div>
         </header>
 
