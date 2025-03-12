@@ -1,11 +1,18 @@
 import Link from "next/link"
+import Image from "next/image"
+import Logo from "@/public/bloogist.png"
 
 export default function Footer() {
   return (
     <footer className="border-t py-8 md:py-12">
       <div className="container grid gap-8 md:grid-cols-4">
         <div className="space-y-3">
-          <h3 className="text-lg font-medium">Bloogist</h3>
+        <Image
+              src={Logo.src}
+              alt="Bloogist"
+              width={160}
+              height={32}
+          />
           <p className="text-sm text-muted-foreground">
             Sharing knowledge and insights on technology, programming, and more.
           </p>

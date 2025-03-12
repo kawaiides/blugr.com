@@ -4,9 +4,10 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import placeholder from "@/public/placeholder.png"
 
-export default function ScreenshotImage({ objectKey, alt }: { 
+export default function ScreenshotImage({ objectKey, alt, onError }: { 
   objectKey: string, 
-  alt: string 
+  alt: string,
+  onError?: () => void, // Add optional onError prop
 }) {
   const [url, setUrl] = useState<string|null>(null)
   const [error, setError] = useState<string|null>(null)
@@ -31,11 +32,14 @@ export default function ScreenshotImage({ objectKey, alt }: {
       } catch (err) {
         console.error('Image load error:', err)
         setError(err instanceof Error ? err.message : 'Failed to load image')
+        if (onError) { // Call onError if it exists
+          onError();
+        }
       }
     }
 
     fetchUrl()
-  }, [objectKey])
+  }, [objectKey, onError]) // Added onError to dependency array
 
   if (error) {
     return (
@@ -52,20 +56,26 @@ export default function ScreenshotImage({ objectKey, alt }: {
       </div>
     )
   }
-
-  return (
-    <div className="relative w-full aspect-video">
-      <Image
-        src={url}
-        alt={alt}
-        placeholder='blur'
-        blurDataURL={placeholder.src}
-        fill
-        className="object-cover rounded-lg"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        priority
-        onError={() => setUrl(placeholder.src)}
-      />
-    </div>
-  )
+  if (url != placeholder.src) {
+    return (
+      <div className="relative w-full aspect-video">
+        <Image
+          src={url}
+          alt={alt}
+          placeholder='blur'
+          blurDataURL={placeholder.src}
+          fill
+          className="object-cover rounded-lg"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority
+          onError={() => {
+            setUrl(placeholder.src);
+            if (onError) { // Call onError if it exists
+              onError();
+            }
+          }}
+        />
+      </div>
+    )
+  }
 }
