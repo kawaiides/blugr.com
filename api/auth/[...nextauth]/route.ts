@@ -1,6 +1,6 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/models/user";
-import NextAuth from "next-auth/next";
+import NextAuth from "next-auth"; // Corrected import
 import GoogleProvider from "next-auth/providers/google";
 
 const authOptions = {
