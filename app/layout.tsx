@@ -4,8 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import { SessionProvider } from "@/app/provider"
-import { Analytics } from "@vercel/analytics/react"
+import { Providers } from "@/components/providers"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -21,20 +20,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3631586940502681"
-      crossOrigin="anonymous"></script>
-      </head>
-      <body className={inter.className}>
+      <Providers>
+        <body className={inter.className}>
           <div className="flex min-h-screen flex-col">
-            <SessionProvider>
-              <Header />
-            </SessionProvider>
+            <Header />
             <main className="flex-1">{children}</main>
-            <Analytics />
             <Footer />
           </div>
-      </body>
+        </body>
+      </Providers>
     </html>
   )
 }

@@ -7,8 +7,26 @@
     text-wrap: balance;
   }
 }
+.log-container {
+  scroll-behavior: smooth;
+}
+.ansi-black { color: #4e4e4e; }
+.ansi-red { color: #ff6b6b; }
+.ansi-green { color: #98c379; }
+.ansi-yellow { color: #e5c07b; }
+.ansi-blue { color: #61afef; }
+.ansi-magenta { color: #c678dd; }
+.ansi-cyan { color: #56b6c2; }
+.ansi-white { color: #abb2bf; }
 
-
+.ansi-bg-black { background-color: #4e4e4e; }
+.ansi-bg-red { background-color: #ff6b6b; }
+.ansi-bg-green { background-color: #98c379; }
+.ansi-bg-yellow { background-color: #e5c07b; }
+.ansi-bg-blue { background-color: #61afef; }
+.ansi-bg-magenta { background-color: #c678dd; }
+.ansi-bg-cyan { background-color: #56b6c2; }
+.ansi-bg-white { background-color: #abb2bf; }
 
 @layer base {
   :root {

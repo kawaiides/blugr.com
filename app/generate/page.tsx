@@ -4,17 +4,19 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import LogStream from '@/components/LogStream'
 
 export default function GeneratePage() {
   const [youtubeUrl, setYoutubeUrl] = useState("")
   const [loading, setLoading] = useState(false)
   const [summary, setSummary] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [showLogs, setShowLogs] = useState(false)
 
   const handleGenerate = async () => {
     setLoading(true)
     setError(null)
-
+    setShowLogs(true)
     // Enhanced URL validation
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/
     if (!youtubeRegex.test(youtubeUrl)) {
@@ -24,24 +26,20 @@ export default function GeneratePage() {
     }
 
     try {
-      const response = await fetch("https://2336-49-207-218-126.ngrok-free.app/process-video", {
+      const response = await fetch("/api/process-video", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          // Add any required headers by your API
-          "ngrok-skip-browser-warning": "true" // If using ngrok's free tier
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          url: youtubeUrl
-        }),
+        body: JSON.stringify({ url: youtubeUrl }),
       })
 
+      const data = await response.json()
+      
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null)
-        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`)
+        throw new Error(data.error || "Generation failed")
       }
 
-      const data = await response.json()
       if (!data.summary) throw new Error("Invalid response format")
       setSummary(data.summary)
     } catch (err) {
@@ -76,6 +74,10 @@ export default function GeneratePage() {
             ⚠️ {error}
           </div>
         )}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold">Generation Progress</h2>
+            <LogStream />
+          </div>
 
         {summary && (
           <Card>
@@ -89,15 +91,17 @@ export default function GeneratePage() {
           </Card>
         )}
 
-        <div className="bg-muted rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">How it works</h2>
-          <ol className="list-decimal list-inside space-y-2">
-            <li>Paste a YouTube video URL in the input field above</li>
-            <li>Click the "Generate Summary" button</li>
-            <li>Our AI will analyze the video content and generate a concise summary</li>
-            <li>The summary will include key points and insights from the video</li>
-          </ol>
-        </div>
+        {!loading && !showLogs && (
+          <div className="bg-muted rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">How it works</h2>
+            <ol className="list-decimal list-inside space-y-2">
+              <li>Paste a YouTube video URL in the input field above</li>
+              <li>Click the "Generate Summary" button</li>
+              <li>Our AI will analyze the video content and generate a concise summary</li>
+              <li>The summary will include key points and insights from the video</li>
+            </ol>
+          </div>
+        )}
       </div>
     </div>
   )

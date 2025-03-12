@@ -1,17 +1,23 @@
-import Link from "next/link"
-import Image from "next/image"
+'use client'
+
+import { Card, CardHeader, CardContent, CardFooter } from "./ui/card"
 import { formatDate } from "@/lib/utils"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { BlogPost } from "@/types/blog"
+import Link from "next/link"
 import ScreenshotImage from "./screenshot-image"
+import type { BlogPost } from "@/types/blog"
 
 export default function BlogCard({ blog }: { blog: BlogPost }) {
+  // Safe access to nested properties
+  const firstH2 = blog.summary.parsed_summary.body[0].h2
+  let imageName =`${firstH2.split(" ").join("_")}_0.png`
+  imageName = `screenshots/${blog.content_id}/` + imageName
+
   return (
     <Card className="overflow-hidden">
       <Link href={`/blog/${blog.content_id}`}>
         <div className="aspect-video relative">
           <ScreenshotImage 
-            objectKey={`screenshots/${blog.content_id}/${blog.summary.parsed_summary.body[0].h2.split(" ").join("_")}_0.png`} 
+            objectKey={imageName}
             alt={blog.summary.parsed_summary.title} 
           />
         </div>
@@ -30,4 +36,3 @@ export default function BlogCard({ blog }: { blog: BlogPost }) {
     </Card>
   )
 }
-

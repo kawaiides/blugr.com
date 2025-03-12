@@ -1,59 +1,71 @@
-// components/screenshot-image.tsx
+'use client'
 
 import Image from 'next/image'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
+import { useEffect, useState } from 'react'
+import placeholder from "@/public/placeholder.png"
 
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION!,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-})
+export default function ScreenshotImage({ objectKey, alt }: { 
+  objectKey: string, 
+  alt: string 
+}) {
+  const [url, setUrl] = useState<string|null>(null)
+  const [error, setError] = useState<string|null>(null)
 
-export default async function ScreenshotImage({ objectKey, alt }: { objectKey: string, alt: string }) {
-  try {
-    // Validate input parameters
-    if (!objectKey || typeof objectKey !== 'string') {
-      throw new Error('Invalid object key provided')
+  useEffect(() => {
+    const fetchUrl = async () => {
+      try {
+        if (!objectKey) {
+          throw new Error('Invalid object key provided')
+        }
+
+        const response = await fetch(
+          `/api/images?objectKey=${encodeURIComponent(objectKey)}`
+        )
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch image URL')
+        }
+
+        const data = await response.json()
+        setUrl(data.url)
+      } catch (err) {
+        console.error('Image load error:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load image')
+      }
     }
 
-    // Verify environment variables
-    if (!process.env.AWS_BUCKET_NAME) {
-      throw new Error('S3_BUCKET_NAME environment variable not configured')
-    }
+    fetchUrl()
+  }, [objectKey])
 
-    const command = new GetObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: objectKey.trim(), // Ensure no whitespace in key
-    })
-
-    const url = await getSignedUrl(s3Client, command, {
-      expiresIn: 60,
-    })
-
+  if (error) {
     return (
-      <div className="relative w-full aspect-video">
-        <Image
-          src={url}
-          placeholder='blur'
-          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
-          alt={alt}
-          fill
-          className="object-cover rounded-lg"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority
-        />
-      </div>
-    )
-  } catch (error) {
-    console.error('S3 Error:', error)
-    return (
-      <div className="bg-red-50 p-4 text-red-700 rounded-lg">
-        <>{objectKey}</>
-        {error instanceof Error ? error.message : 'Failed to load image'}
+      <div className="bg-red-50 p-4 text-red-700 rounded-lg aspect-video flex items-center justify-center">
+        {error}
       </div>
     )
   }
+
+  if (!url) {
+    return (
+      <div className="aspect-video flex items-center justify-center bg-muted rounded-lg">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="relative w-full aspect-video">
+      <Image
+        src={url}
+        alt={alt}
+        placeholder='blur'
+        blurDataURL={placeholder.src}
+        fill
+        className="object-cover rounded-lg"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        priority
+        onError={() => setUrl(placeholder.src)}
+      />
+    </div>
+  )
 }

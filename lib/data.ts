@@ -1,14 +1,14 @@
 import { connectToDatabase } from './mongodb'
 import type { BlogPost } from '@/types/blog'
 
-export async function getLatestBlogs(): Promise<BlogPost[]> {
+export async function getLatestBlogs(num_blogs: number): Promise<BlogPost[]> {
   try {
     const client = await connectToDatabase()
     const collection = client.db("blugr").collection<BlogPost>("generated-texts")
     const blogs = await collection
       .find({})
       .sort({ 'metadata.created_at': -1 }) // Sort by creation date descending
-      .limit(10)
+      .limit(num_blogs)
       .toArray()
 
     return blogs.map((blog: BlogPost & { _id: { toString: () => string }, metadata: { created_at: string } }) => ({

@@ -7,10 +7,10 @@ export const revalidate = 3600
 
 // Add metadata for SEO
 export const metadata: Metadata = {
-  title: "Blugr - Home",
+  title: "Bloogist - Home",
   description: "Discover trending, personalized, and latest blog posts on technology, programming, and more.",
   openGraph: {
-    title: "Blugr - Home",
+    title: "Bloogist - Home",
     description: "Discover trending, personalized, and latest blog posts on technology, programming, and more.",
     type: "website",
     images: [
@@ -18,14 +18,14 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Blugr",
+        alt: "Bloogist",
       },
     ],
   },
 }
 
 export default async function Home() {
-  const latestBlogs = await getLatestBlogs()
+  const latestBlogs = await getLatestBlogs(16)
 
   return (
     <div className="container py-8 space-y-12">
@@ -40,4 +40,3 @@ export default async function Home() {
     </div>
   )
 }
-
