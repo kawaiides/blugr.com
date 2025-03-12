@@ -88,7 +88,6 @@ async function getBlogPost(content_id: string): Promise<BlogPost> {
 
 export default async function BlogPostPage({ params }: { params: { content_id: string } }) {
   const post = await getBlogPost(params.content_id)
-
   return (
     <div className="min-h-screen bg-gray-50">
       <article className="max-w-3xl mx-auto px-4 py-12">

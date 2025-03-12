@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="border-t py-8 md:py-12">
       <div className="container grid gap-8 md:grid-cols-4">
         <div className="space-y-3">
-          <h3 className="text-lg font-medium">BlogPlatform</h3>
+          <h3 className="text-lg font-medium">Bloogist</h3>
           <p className="text-sm text-muted-foreground">
             Sharing knowledge and insights on technology, programming, and more.
           </p>
@@ -62,7 +62,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="container mt-8 border-t pt-8">
-        <p className="text-center text-sm text-muted-foreground">© 2025 BlogPlatform. All rights reserved.</p>
+        <p className="text-center text-sm text-muted-foreground">© 2025 Bloogist. All rights reserved.</p>
       </div>
     </footer>
   )

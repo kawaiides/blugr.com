@@ -5,7 +5,7 @@ export interface BlogPost {
   status: string;
   version: string;
   has_search_results: boolean;
-  
+  created_at: string;
   search_results: {
     results: Array<SearchResult>;
     metadata: {
