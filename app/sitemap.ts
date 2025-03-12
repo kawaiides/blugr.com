@@ -1,4 +1,4 @@
-import { connectToDatabase } from "@/lib/mongodb"
+import { connectToDatabase } from "@/app/lib/mongodb"
 
 export default async function sitemap() {
   const baseUrl = "https://blogplatform.com"

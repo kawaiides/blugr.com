@@ -1,6 +1,6 @@
 import BlogCard from "@/components/blog-card"
 import type { Metadata } from "next"
-import { getLatestBlogs } from "@/lib/data"
+import { getLatestBlogs } from "@/app/lib/data"
 
 // Set revalidation period for ISR (e.g., 1 hour = 3600 seconds)
 export const revalidate = 3600

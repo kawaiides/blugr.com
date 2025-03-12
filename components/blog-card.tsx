@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardContent, CardFooter } from "./ui/card"
 import { useState } from "react"
-import { formatDate } from "@/lib/utils"
+import { formatDate } from "@/app/lib/utils"
 import Link from "next/link"
 import ScreenshotImage from "./screenshot-image"
 import type { BlogPost } from "@/types/blog"

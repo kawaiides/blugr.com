@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import { connectToDatabase } from "@/lib/mongodb"
+import { connectToDatabase } from "@/app/lib/mongodb"
 import type { BlogPost } from "@/types/blog"
 import { notFound } from "next/navigation"
-import { formatDate } from "@/lib/utils"
+import { formatDate } from "@/app/lib/utils"
 import ScreenshotImage from "@/components/screenshot-image"
 
 export const revalidate = 3600

@@ -1,14 +1,14 @@
 // app/api/categories/[id]/route.ts
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { prisma } from '@/lib/prisma';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { prisma } from '@/app/lib/prisma';
+import { authOption } from '@/app/lib/auth';
 
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOption);
 
   if (!session?.user?.email) {
     return NextResponse.json(
@@ -50,7 +50,7 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOption);
 
   if (!session?.user?.email) {
     return NextResponse.json(

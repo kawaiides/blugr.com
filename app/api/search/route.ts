@@ -1,5 +1,5 @@
 import { metadata } from "@/app/layout"
-import { connectToDatabase } from "@/lib/mongodb"
+import { connectToDatabase } from "@/app/lib/mongodb"
 import { NextResponse } from "next/server"
 
 export async function GET(request: Request) {
