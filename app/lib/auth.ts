@@ -26,6 +26,22 @@ export const authOption: NextAuthOptions = {
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID!,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        authorization: {
+          params: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+          url: "https://accounts.google.com/o/oauth2/v2/auth",
+        },
+        token: {
+          url: "https://oauth2.googleapis.com/token",
+        },
+        userinfo: {
+          url: "https://openidconnect.googleapis.com/v1/userinfo",
+        },
+        httpOptions: {
+          timeout: 10000 // 10 seconds timeout
+        },
       }),
     ],
     secret: process.env.NEXTAUTH_SECRET,
