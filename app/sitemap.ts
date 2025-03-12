@@ -1,7 +1,7 @@
 import { connectToDatabase } from "@/app/lib/mongodb"
 
 export default async function sitemap() {
-  const baseUrl = "https://blogplatform.com"
+  const baseUrl = "https://bloogist.com"
   const client = await connectToDatabase()
   const collection = client.db("blugr").collection("generated-texts")
   const blogs = await collection.find().toArray()

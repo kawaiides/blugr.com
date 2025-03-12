@@ -5,7 +5,7 @@ export default function robots() {
       allow: "/",
       disallow: "/api/",
     },
-    sitemap: "https://blogplatform.com/sitemap.xml",
+    sitemap: "https://bloogist.com/sitemap.xml",
   }
 }
 

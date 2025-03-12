@@ -2,8 +2,8 @@ import Image from "next/image"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "About Us | BlogPlatform",
-  description: "Learn about the BlogPlatform team, our mission, and our values.",
+  title: "About Us | Bloogist",
+  description: "Learn about the Bloogist team, our mission, and our values.",
 }
 
 export default function AboutUsPage() {

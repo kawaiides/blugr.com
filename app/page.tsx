@@ -22,6 +22,7 @@ export const metadata: Metadata = {
       },
     ],
   },
+  robots: "follow, index",
 }
 
 export default async function Home() {

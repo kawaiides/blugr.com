@@ -73,4 +73,5 @@ export interface Metadata {
   status: string;
   version: string;
   has_search_results: boolean;
+  keywords: Array<string>;
 }
