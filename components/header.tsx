@@ -46,13 +46,10 @@ export default function Header() {
             </Link>
             <Link 
               href="/generate" 
-              className="text-2xl font-medium text-black rounded-full border-solid shadow-lg bg-gradient-to-r from-yellow-300 to-orange-500 rounded-lg py-2 px-4 hover:bg-yellow-400"
+              className="flex items-center hover:scale-105 text-2xl font-medium rounded-full border-solid shadow-lg bg-gradient-to-r from-yellow-300 to-orange-500 rounded-lg py-2 px-4 hover:bg-yellow-400"
             >
-              <div
-                className="text-2xl font-medium gap-6 whitespace-nowrap utility"
-              >
-                Generate a bloog ✨
-              </div>
+                <div className="text-white pr-1">bloog</div>
+                <div className="text-3xl">✨</div>
             </Link>
           </nav>
 
@@ -78,20 +75,24 @@ export default function Header() {
             className="md:hidden p-2"
           >
             {isMenuOpen ? <X size={40} /> : 
-            <div className="flex items-center gap-2">
-            <Menu size={40} />
-            <Link 
-              className={`p-2 rounded-md flex justify-center gap-3 items-center`}
-              href="/profile"
-            >
-            <Image
-              className="rounded-full"
-              src={session?.user?.image || "/default-profile.png"}
-              alt="User profile picture"
-              width={50}
-              height={50}
-            />
-            </Link>
+              <div className="flex items-center gap-2">
+              <Menu size={40} />
+              {
+                session && <>
+                  <Link 
+                    className={`p-2 rounded-md flex justify-center gap-3 items-center`}
+                    href="/profile"
+                  >
+                  <Image
+                    className="rounded-full"
+                    src={session?.user?.image || "/default-profile.png"}
+                    alt="User profile picture"
+                    width={50}
+                    height={50}
+                  />
+                  </Link>
+                </>
+              }
             </div>}
           </button>
         </div>
@@ -142,9 +143,14 @@ export default function Header() {
       <div className="fixed md:hidden bottom-6 right-6 z-40">
         <Link
           href="/generate"
-          className="flex items-center justify-center p-8 w-auto h-14 rounded-full border-solid shadow-lg bg-gradient-to-r from-yellow-300 to-orange-500 hover:bg-yellow-100 transition-colors text-black text-2xl"
+          className="flex p-6 items-center justify-center h-14 rounded-full border-solid shadow-lg bg-gradient-to-r from-yellow-300 to-orange-500 hover:bg-yellow-100"
         >
-          Generate a bloog ✨
+          <span className="whitespace-nowrap pr-1 text-white text-2xl font-medium">
+            bloog 
+          </span>
+          <span className="text-4xl">
+            ✨
+          </span>
         </Link>
       </div>
     </>

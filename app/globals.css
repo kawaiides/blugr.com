@@ -1,7 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@keyframes occasional-reveal {
+  0%, 15% { max-width: 56px; }
+  15%, 20% { max-width: 250px; }
+  100% { max-width: 56px; }
+}
 
+.occasional-reveal {
+  animation: occasional-reveal 8s infinite;
+}
 @layer utilities {
   .text-balance {
     text-wrap: balance;
