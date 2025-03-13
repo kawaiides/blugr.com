@@ -22,7 +22,13 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             <li>
               <Link href="/" className="text-muted-foreground hover:text-foreground">
-                Home
+                Latest Bloogs
+              </Link>
+              <Link href="/search" className="text-muted-foreground hover:text-foreground">
+                Search Latest Content
+              </Link>
+              <Link href="/generate" className="text-muted-foreground hover:text-foreground">
+                Generate Blogs
               </Link>
             </li>
           </ul>
