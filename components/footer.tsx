@@ -24,9 +24,13 @@ export default function Footer() {
               <Link href="/" className="text-muted-foreground hover:text-foreground">
                 Latest Bloogs
               </Link>
+            </li>
+            <li>
               <Link href="/search" className="text-muted-foreground hover:text-foreground">
                 Search Latest Content
               </Link>
+            </li>
+            <li>
               <Link href="/generate" className="text-muted-foreground hover:text-foreground">
                 Generate Blogs
               </Link>
