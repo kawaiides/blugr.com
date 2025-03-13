@@ -23,6 +23,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
       <meta name="google-adsense-account" content="ca-pub-3631586940502681"></meta>
+      <meta name='impact-site-verification' content='000846bd-83dc-446f-9529-9a17299eea5d'></meta>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel='icon' href={favicon.src}/>
       </head>
