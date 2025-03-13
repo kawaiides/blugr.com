@@ -1,3 +1,4 @@
+// app/api/images/route.ts
 import { NextResponse, NextRequest } from 'next/server'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
@@ -5,7 +6,7 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 export const revalidate = 0
 
 // Configure S3 client with error checking
-const getS3Client = () => {
+export const getS3Client = () => {
   if (!process.env.AWS_REGION || !process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
     throw new Error('AWS credentials not configured')
   }
