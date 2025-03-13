@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link"
-import { Search } from "lucide-react"
+import { Search, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Image from "next/image"
@@ -11,24 +11,18 @@ import UserInfo from "./UserInfo"
 export default function Header() {
   const { data: session, status } = useSession()
   const [isMounted, setIsMounted] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  // Ensure client-side mounting
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
+  useEffect(() => setIsMounted(true), [])
 
-  // Debug session changes
-  useEffect(() => {
-    console.log("Session updated:", session)
-  }, [session])
-
-  if (!isMounted) return null  // Prevent SSR mismatch
+  if (!isMounted) return null
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-      <div className="container flex p-5 items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="font-bold text-2xl">
+    <>
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
+        <div className="container flex p-5 items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="md:flex-1">
             <Image
               src={Logo.src}
               alt="Bloogist"
@@ -36,39 +30,123 @@ export default function Header() {
               height={32}
             />
           </Link>
-          <nav className="hidden md:flex gap-6">
-            <Link href="/" className="text-2xl font-medium hover:underline">
-              Home
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex gap-6 flex-1 justify-center items-center flex-wrap-reverse">
+            <Link href="/search" className="flex justify-center items-center py-2 px-4 hover:bg-orange-100 rounded-lg">
+              <div
+                className="text-2xl font-medium gap-6"
+              >
+                Search
+              </div>
+              <Button variant="ghost" size="icon" className="hover:bg-orange-100">
+                <Search className="h-5 w-5 hover:bg-orange-100" />
+                <span className="sr-only hover:bg-orange-100">Search</span>
+              </Button>
             </Link>
-            <Link href="/search" className="text-2xl font-medium hover:underline">
-              Search
+            <Link 
+              href="/generate" 
+              className="text-2xl font-medium text-black rounded-full border-solid shadow-lg bg-gradient-to-r from-yellow-300 to-orange-500 rounded-lg py-2 px-4 hover:bg-yellow-400"
+            >
+              <div
+                className="text-2xl font-medium gap-6 whitespace-nowrap utility"
+              >
+                Generate a bloog ✨
+              </div>
             </Link>
           </nav>
-        </div>
-        <div className="flex items-center gap-6">
-          <Link href="/search">
-            <Button variant="ghost" size="icon">
-              <Search className="h-10 w-10" />
-              <span className="sr-only">Search</span>
-            </Button>
-          </Link>
-          
-          {status === "loading" ? (
-            <div>Loading...</div>
-          ) : session ? (
-            <div className="flex text-2xl items-center gap-4">
+
+          {/* Desktop Auth Section */}
+          <div className="hidden md:flex items-center gap-6 flex-1 justify-end">
+            {status === "loading" ? (
+              <div>Loading...</div>
+            ) : session ? (
               <UserInfo />
-            </div>
-          ) : (
-            <Button 
-              onClick={() => signIn('google', { callbackUrl: '/' })}
-              className="h-10 text-xl p-4"
+            ) : (
+              <Button 
+                onClick={() => signIn('google', { callbackUrl: '/' })}
+                className="text-2xl font-medium py-2 px-4 text-white bg-orange-500 hover:bg-orange-600 rounded-lg"
+              >
+                Sign In
+              </Button>
+            )}
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2"
+          >
+            {isMenuOpen ? <X size={40} /> : 
+            <div className="flex items-center gap-2">
+            <Menu size={40} />
+            <Link 
+              className={`p-2 rounded-md flex justify-center gap-3 items-center`}
+              href="/profile"
             >
-              Sign In
-            </Button>
-          )}
+            <Image
+              className="rounded-full"
+              src={session?.user?.image || "/default-profile.png"}
+              alt="User profile picture"
+              width={50}
+              height={50}
+            />
+            </Link>
+            </div>}
+          </button>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {isMenuOpen && (
+          <div className="absolute top-full left-0 w-full bg-background border-b md:hidden">
+            <div className="container p-5 space-y-4">
+              <nav className="flex flex-col gap-4">
+                <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-2xl p-2">
+                  Home
+                </Link>
+                <Link href="/search" onClick={() => setIsMenuOpen(false)} className="text-2xl p-2">
+                  Search
+                </Link>
+                <Link href="/generate" onClick={() => setIsMenuOpen(false)} className="text-2xl p-2">
+                  Generate a bloog ✨
+                </Link>
+              </nav>
+              
+              <div className="pt-4 border-t">
+                {session ? (
+                  <div className="flex flex-col gap-4">
+                    <UserInfo mobileLayout />
+                    <Button
+                      onClick={() => signOut()}
+                      className="text-xl p-6 bg-orange-500 text-white hover:bg-orange-600"
+                      variant="ghost"
+                    >
+                      Sign Out
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={() => signIn('google', { callbackUrl: '/' })}
+                    className="w-full text-xl p-4 bg-orange-500 hover:bg-orange-600"
+                  >
+                    Sign In
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Mobile Floating Generate Button */}
+      <div className="fixed md:hidden bottom-6 right-6 z-40">
+        <Link
+          href="/generate"
+          className="flex items-center justify-center p-8 w-auto h-14 rounded-full border-solid shadow-lg bg-gradient-to-r from-yellow-300 to-orange-500 hover:bg-yellow-100 transition-colors text-black text-2xl"
+        >
+          Generate a bloog ✨
+        </Link>
       </div>
-    </header>
+    </>
   )
 }
