@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 
@@ -17,9 +17,13 @@ const getS3Client = () => {
   })
 }
 
-export async function GET(request: Request) {
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic'
+
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    // Use request.nextUrl instead of creating new URL
+    const { searchParams } = request.nextUrl
     const objectKey = searchParams.get('objectKey')
 
     // Validate input
