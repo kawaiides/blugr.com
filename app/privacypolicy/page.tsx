@@ -83,7 +83,7 @@ export default function PrivacyPolicyPage() {
         <h2>Contact Us</h2>
         <p>If you have any questions about this Privacy Policy, please contact us at privacy@blogplatform.com.</p>
 
-        <p className="text-sm text-muted-foreground mt-8">Last updated: February 28, 2025</p>
+        <p className="text-sm text-muted-foreground mt-8">Last updated: March 14, 2025</p>
       </div>
     </div>
   )

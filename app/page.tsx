@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { getLatestBlogs } from "@/app/lib/data"
 
 // Set revalidation period for ISR (e.g., 1 hour = 3600 seconds)
-export const revalidate = 5
+export const revalidate = 10
 
 // Add metadata for SEO
 export const metadata: Metadata = {
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-  const latestBlogs = await getLatestBlogs(16)
+  const latestBlogs = await getLatestBlogs(100)
 
   return (
     <div className="container py-8 space-y-12">
