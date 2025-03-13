@@ -1,3 +1,4 @@
+
 // next.config.js
 module.exports = {
   images: {
@@ -16,10 +17,6 @@ module.exports = {
     ],
   },
   "rewrites": [
-      {
-        "source": "/api/:path*",
-        "destination": "/api/:path*"
-      },
       {
         "source": "/(.*)",
         "destination": "/"
