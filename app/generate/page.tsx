@@ -76,7 +76,7 @@ export default function GeneratePage() {
         )}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Generation Progress</h2>
-            <LogStream />
+            {/* <LogStream /> */}
           </div>
 
         {summary && (
