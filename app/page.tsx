@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { getLatestBlogs } from "@/app/lib/data"
 
 // Set revalidation period for ISR (e.g., 1 hour = 3600 seconds)
-export const revalidate = 3600
+export const revalidate = 5
 
 // Add metadata for SEO
 export const metadata: Metadata = {
