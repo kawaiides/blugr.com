@@ -4,7 +4,7 @@ import { Search, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Image from "next/image"
-import Logo from "@/public/bloogist.png"
+import Logo from "@/public/bloogist.webp"
 import { useEffect, useState } from "react"
 import UserInfo from "./UserInfo"
 
@@ -62,7 +62,6 @@ export default function Header() {
             ) : (
               <Button 
                 onClick={() => signIn('google', { callbackUrl: '/' })}
-                className="text-2xl font-medium py-2 px-4 text-white bg-orange-500 hover:bg-orange-600 rounded-lg"
               >
                 Sign In
               </Button>
@@ -128,7 +127,6 @@ export default function Header() {
                 ) : (
                   <Button
                     onClick={() => signIn('google', { callbackUrl: '/' })}
-                    className="w-full text-xl p-4 bg-orange-500 hover:bg-orange-600"
                   >
                     Sign In
                   </Button>

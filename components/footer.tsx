@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import Logo from "@/public/bloogist.png"
+import Logo from "@/public/bloogist.webp"
 
 export default function Footer() {
   return (
