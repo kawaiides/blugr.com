@@ -1,24 +1,13 @@
 // app/api/images/route.ts
 import { NextResponse, NextRequest } from 'next/server'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
+import { GetObjectCommand } from '@aws-sdk/client-s3'
+import { getS3Client } from '@/app/lib/s3'
 
 export const revalidate = 0
 
 // Configure S3 client with error checking
-export const getS3Client = () => {
-  if (!process.env.AWS_REGION || !process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
-    throw new Error('AWS credentials not configured')
-  }
-  
-  return new S3Client({
-    region: process.env.AWS_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    }
-  })
-}
+
 
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic'
