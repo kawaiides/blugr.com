@@ -40,6 +40,17 @@ export interface BlogPost {
   };
 
   url: string;
+
+  product_data: {
+    title: string,
+    price: string,
+    available: string,
+    review_count: string,
+    product_url: string,
+    image_url: string
+  };
+
+  related_posts: Array<string>;
 }
 
 export interface BlogSection {

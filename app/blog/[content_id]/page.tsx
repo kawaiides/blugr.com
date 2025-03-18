@@ -2,10 +2,14 @@
 import type { Metadata } from "next"
 import { connectToDatabase } from "@/app/lib/mongodb"
 import type { BlogPost } from "@/types/blog"
+import BlogCard from "@/components/blog-card"
 import { notFound } from "next/navigation"
 import { formatDate } from "@/app/lib/utils"
 import ScreenshotImage from "@/components/screenshot-image"
 import ShareButtons from "@/components/share-buttons"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export const revalidate = 3600
 
@@ -77,31 +81,35 @@ function safelyParseDate(dateValue: any): string | null {
   }
 }
 
-async function getBlogPost(content_id: string): Promise<BlogPost> {
+async function getBlogPost(content_id: string): Promise<BlogPost & { relatedPosts: BlogPost[] }> {
   try {
     const client = await connectToDatabase()
     const collection = client.db("blugr").collection<BlogPost>("generated-texts")
+    
+    // Get main post
     const post = await collection.findOne({ content_id })
+    if (!post) notFound()
 
-    if (!post) {
-      notFound()
+    // Get related posts
+    const relatedPosts = post.related_posts && post.related_posts.length > 0
+      ? await collection.find({
+          content_id: { $in: post.related_posts }
+        }).toArray()
+      : []
+
+    // Convert MongoDB objects to plain objects and handle dates
+    const parsePosts = (posts: any[]) => posts.map(post => ({
+      ...post,
+      metadata: {
+        ...post.metadata,
+        created_at: post.metadata?.created_at ? safelyParseDate(post.metadata.created_at) : null
+      }
+    }))
+
+    return {
+      ...JSON.parse(JSON.stringify(post)),
+      relatedPosts: parsePosts(relatedPosts)
     }
-
-    // Safely handle date conversion
-    const safeCreatedAt = post.metadata?.created_at ? safelyParseDate(post.metadata.created_at) : null
-
-    // Convert MongoDB document to plain object and handle dates
-    const parsedPost = JSON.parse(
-      JSON.stringify({
-        ...post,
-        metadata: {
-          ...post.metadata,
-          created_at: safeCreatedAt,
-        },
-      }),
-    )
-
-    return parsedPost as BlogPost
   } catch (error) {
     console.error("Error fetching blog post:", error)
     throw new Error("Failed to fetch blog post")
@@ -129,18 +137,18 @@ function addStructuredData(post: BlogPost, contentId: string) {
 }
 
 export default async function BlogPostPage({ params }: { params: { content_id: string } }) {
-  const post = await getBlogPost(params.content_id)
+  const { relatedPosts, ...post } = await getBlogPost(params.content_id)
   const pageUrl = `${process.env.SITE_URL}/blog/${params.content_id}`
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 grid grid-cols-1 lg:grid-cols-[40%_15%] justify-center gap-8 px-4 py-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(addStructuredData(post, params.content_id)) }}
       />
       
-      <article className="max-w-3xl mx-auto px-4 py-12">
-        <header className="mb-12 text-center">
+      {/* Main Article */}
+      <article className="w-full max-w-xl lg:max-w-none mx-auto lg:col-start-1 lg:justify-self-center">
+        <header className="mb-8 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">{post.summary.parsed_summary.title}</h1>
           <div className="text-lg text-gray-600 mb-6">{post.summary.parsed_summary.blog_desc}</div>
           <div className="flex justify-center items-center gap-4">
@@ -158,8 +166,41 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
         </header>
 
         <div className="prose prose-lg max-w-none">
-          {post.summary.parsed_summary.body.map((section, index) => {
+        {post.summary.parsed_summary.body.map((section, index) => {
             const objectKey = `screenshots/${params.content_id}/${section.h2.split(" ").join("_")}_0.png`
+            if (index%2 == 0 && post.product_data) {
+              return (
+                <section key={`${section.h2}-${index}`} className="mb-6">
+                  <div className="flex my-3 flex-wrap justify-center items-center">
+                    <div className="p-4">
+                    {post.product_data.image_url &&
+                      <Image 
+                        src={post.product_data.image_url}
+                        alt={post.product_data.title}
+                        width={120}
+                        height={120}
+                        className="object-cover rounded-lg"
+                        sizes="(max-width: 76px) 100vw, (max-width: 120px) 50vw, 33vw"
+                        priority
+                      />
+                    }      
+                    </div>     
+                    <div className="p-4 w-96">
+                      <h3 className="text-xl font-bold my-3">{post.product_data.title}</h3>
+                      <Link href={post.product_data.product_url}><Button>Buy Now</Button></Link>
+                    </div>
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">{section.h2}</h2>
+                  <p className="text-gray-700 leading-relaxed">{section.p}</p>
+                  <div className="p-4">
+                    <ScreenshotImage
+                      objectKey={objectKey}
+                      alt={`${post.summary.parsed_summary.title} - ${section.h2}`}
+                    />
+                  </div>
+                </section>
+              )
+            }
             return (
               <section key={`${section.h2}-${index}`} className="mb-8">
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">{section.h2}</h2>
@@ -187,6 +228,21 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
           </div>
         </footer>
       </article>
+
+      {/* Related Posts */}
+      {relatedPosts.length > 0 && (
+        <section className="lg:col-start-2 w-full max-w-xs mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-6 text-center">Related Posts</h2>
+          <div className="flex flex-col gap-6 p-4">
+            {relatedPosts.map(relatedPost => (
+              <BlogCard
+                key={relatedPost.content_id}
+                blog={relatedPost}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
