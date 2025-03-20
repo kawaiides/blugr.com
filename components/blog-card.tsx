@@ -13,7 +13,7 @@ export default function BlogCard({ blog }: { blog: BlogPost }) {
 
   // Generate initial image key from H2
   useEffect(() => {
-    const firstH2 = blog.summary.parsed_summary.body[0]?.h2 || 'default'
+    const firstH2 = blog.summary.parsed_summary?.body?.[0]?.h2 || 'default';
     const initialImage = `${firstH2.split(" ").join("_")}_0.png`
     const initialKey = `screenshots/${blog.content_id}/${initialImage}`
     setCurrentObjectKey(initialKey)
@@ -42,7 +42,9 @@ export default function BlogCard({ blog }: { blog: BlogPost }) {
   if (!currentObjectKey) return null // Or a loading skeleton
 
   if (!hasError) return (
-    <Card className="overflow-hidden">
+    <>
+      {blog && 
+      <Card className="overflow-hidden">
       <Link href={`/blog/${blog.content_id}`}>
         <div className="aspect-video relative">
           <ScreenshotImage
@@ -69,6 +71,7 @@ export default function BlogCard({ blog }: { blog: BlogPost }) {
           </p>
         </CardFooter>
       </Link>
-    </Card>
+    </Card>}
+    </>
   )
 }

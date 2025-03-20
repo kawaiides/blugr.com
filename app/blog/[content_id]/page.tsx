@@ -184,11 +184,13 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
                         priority
                       />
                     }      
-                    </div>     
-                    <div className="p-4 w-96">
+                    </div>
+                    {post.product_data.product_url && post.product_data.title && 
+                      <div className="p-4 w-96">
                       <h3 className="text-xl font-bold my-3">{post.product_data.title}</h3>
                       <Link href={post.product_data.product_url}><Button>Buy Now</Button></Link>
                     </div>
+                    }     
                   </div>
                   <h2 className="text-2xl font-semibold text-gray-900 mb-4">{section.h2}</h2>
                   <p className="text-gray-700 leading-relaxed">{section.p}</p>
