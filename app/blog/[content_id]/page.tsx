@@ -170,10 +170,12 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
             const objectKey = `screenshots/${params.content_id}/${section.h2.split(" ").join("_")}_0.png`
             if (index%2 == 0 && post.product_data) {
               return (
+                <>
                 <section key={`${section.h2}-${index}`} className="mb-6">
+                {post.product_data.image_url && post.product_data.product_url && post.product_data.title && 
                   <div className="flex my-3 flex-wrap justify-center items-center">
                     <div className="p-4">
-                    {post.product_data.image_url &&
+                    
                       <Image 
                         src={post.product_data.image_url}
                         alt={post.product_data.title}
@@ -182,16 +184,15 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
                         className="object-cover rounded-lg"
                         sizes="(max-width: 76px) 100vw, (max-width: 120px) 50vw, 33vw"
                         priority
-                      />
-                    }      
+                      />      
                     </div>
-                    {post.product_data.product_url && post.product_data.title && 
+                    
                       <div className="p-4 w-96">
                       <h3 className="text-xl font-bold my-3">{post.product_data.title}</h3>
                       <Link href={post.product_data.product_url}><Button>Buy Now</Button></Link>
-                    </div>
-                    }     
+                    </div>   
                   </div>
+                }
                   <h2 className="text-2xl font-semibold text-gray-900 mb-4">{section.h2}</h2>
                   <p className="text-gray-700 leading-relaxed">{section.p}</p>
                   <div className="p-4">
@@ -201,6 +202,7 @@ export default async function BlogPostPage({ params }: { params: { content_id: s
                     />
                   </div>
                 </section>
+                </>
               )
             }
             return (
