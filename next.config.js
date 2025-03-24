@@ -23,5 +23,6 @@ module.exports = {
       "destination": "/"
     }
   ],
-  staticPageGenerationTimeout: 180
+  staticPageGenerationTimeout: 300,
+  plugins: ['next-sitemap'],
 }
