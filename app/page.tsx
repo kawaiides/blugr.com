@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-  const latestBlogs = await getLatestBlogs(100)
+  const latestBlogs = await getLatestBlogs(50)
 
   return (
     <div className="container py-8 space-y-12">

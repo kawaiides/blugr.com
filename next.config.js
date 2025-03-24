@@ -18,9 +18,10 @@ module.exports = {
     ],
   },
   "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/"
-      }
-    ]
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ],
+  staticPageGenerationTimeout: 180
 }
